@@ -61,3 +61,6 @@ import { Client } from 'appwrite';
 
 const client = new Client();
 client.setProject('67e16abe000915181852');
+
+EXPO_PUBLIC_APPWRITE_PROJECT_ID=67e16abe000915181852
+EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
