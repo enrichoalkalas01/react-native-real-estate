@@ -56,7 +56,7 @@ export function Card({ onPress }: IProps) {
     return (
         <TouchableOpacity
             onPress={onPress}
-            className="flex-1 w-full mt-4 px-3 py-4 rounded-lg bg-white shadow-lg shadow-black-100/70 relative"
+            className="flex-1 w-full mt-5 px-3 py-4 rounded-lg bg-white shadow-lg shadow-black-100/70 relative"
         >
             <View className="flex flex-row items-center absolute px-2 top-5 right-5 bg-white/90 p-1 rounded-full z-50">
                 <Image source={icons.star} className="size-3.5" />
