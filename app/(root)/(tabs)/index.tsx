@@ -1,4 +1,11 @@
-import { FlatList, Image, Text, TouchableOpacity, View, Button } from "react-native";
+import {
+    FlatList,
+    Image,
+    Text,
+    TouchableOpacity,
+    View,
+    Button,
+} from "react-native";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
@@ -10,21 +17,19 @@ import { useGlobalContext } from "@/lib/global-provider";
 import seed from "@/lib/seed";
 
 export default function HomeScreen() {
-    const { user } = useGlobalContext()
-    console.log(user)
-    
+    const { user } = useGlobalContext();
+    // console.log(user)
+
     return (
         <SafeAreaView className="bg-white h-full">
             <Button title="Seed" onPress={seed} />
             <FlatList
-                data={[1,2,3,4,5]}
-                renderItem={({item}) => {
-                    return(
-                        <Card />
-                    )
+                data={[1, 2, 3, 4, 5]}
+                renderItem={({ item }) => {
+                    return <Card />;
                 }}
                 keyExtractor={(item) => {
-                    return item.toString()
+                    return item.toString();
                 }}
                 numColumns={2}
                 key={`flatlist-${2}`}
@@ -52,7 +57,10 @@ export default function HomeScreen() {
                                 </View>
                             </View>
                             <TouchableOpacity>
-                                <Image source={icons.bell} className="size-6 mr-2" />
+                                <Image
+                                    source={icons.bell}
+                                    className="size-6 mr-2"
+                                />
                             </TouchableOpacity>
                         </View>
 
@@ -73,11 +81,9 @@ export default function HomeScreen() {
 
                             <View className="flex flex-row gap-5 mt-5">
                                 <FlatList
-                                    data={[1,2,3,4]}
+                                    data={[1, 2, 3, 4]}
                                     renderItem={({ item }) => {
-                                        return(
-                                            <FeaturedCards />
-                                        )
+                                        return <FeaturedCards />;
                                     }}
                                     keyExtractor={(item) => item.toString()}
                                     horizontal
@@ -103,7 +109,6 @@ export default function HomeScreen() {
                     </View>
                 }
             />
-            
         </SafeAreaView>
     );
 }
