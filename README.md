@@ -64,3 +64,5 @@ client.setProject('67e16abe000915181852');
 
 EXPO_PUBLIC_APPWRITE_PROJECT_ID=67e16abe000915181852
 EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+
+https://beta.jsmastery.pro/video-kit/65a28012-84bd-4357-aef5-00c7e4391d8d
