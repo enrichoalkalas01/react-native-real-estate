@@ -5,8 +5,9 @@ import {
     TouchableOpacity,
     View,
     Button,
+    ActivityIndicator,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
@@ -15,24 +16,63 @@ import { Card, FeaturedCards } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import { useGlobalContext } from "@/lib/global-provider";
 import seed from "@/lib/seed";
+import { useAppwrite } from "@/lib/useAppwrite";
+import { getLatestProperties, getListProperties } from "@/lib/appwrite";
+import { useEffect } from "react";
+import NoResult from "@/components/NoResult";
 
 export default function HomeScreen() {
     const { user } = useGlobalContext();
-    // console.log(user)
+    const params = useLocalSearchParams<{
+        query?: string;
+        filter?: string;
+    }>()
+
+    const { data: latestPropertiesData, loading: latestPropertiesLoading } = useAppwrite({
+        fn: getLatestProperties
+    })
+
+    const { data: properties, loading, refetch } = useAppwrite({
+        fn: getListProperties,
+        params: {
+            filter: `${params.filter || ""}`,
+            query: `${params.query || ""}`,
+            limit: 4
+        },
+        skip: true,
+    })
+
+    const handlePress = (id: string) => {
+        return router.push(`/properties/${id}`)
+    }
+
+    useEffect(() => {
+        refetch({
+            filter: `${params.filter || ""}`,
+            query: `${params.query || ""}`,
+            limit: 4
+        })
+    }, [params.filter, params.query])
 
     return (
         <SafeAreaView className="bg-white h-full">
-            <Button title="Seed" onPress={seed} />
+            {/* <Button title="Seed" onPress={seed} /> */}
             <FlatList
-                data={[1, 2, 3, 4, 5]}
+                // data={[]}
+                // data={[1, 2, 3, 4, 5]}
+                data={properties || []}
                 renderItem={({ item }) => {
-                    return <Card />;
+                    return <Card item={item} onPress={() => handlePress(item.$id)} />;
                 }}
                 keyExtractor={(item) => {
-                    return item.toString();
+                    return item?.$id.toString() || "";
                 }}
                 numColumns={2}
                 key={`flatlist-${2}`}
+                ListEmptyComponent={
+                    loading ? <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+                    : <NoResult />
+                }
                 contentContainerClassName="pb-32"
                 columnWrapperClassName="flex gap-5 px-5"
                 showsVerticalScrollIndicator={false}
@@ -49,7 +89,7 @@ export default function HomeScreen() {
                                 </TouchableOpacity>
                                 <View className="flex flex-col items-start ml-2 justify-center">
                                     <Text className="text-xs font-rubik text-black-100">
-                                        Good Moring
+                                        Good Morning
                                     </Text>
                                     <Text className="text-base font-rubik-medium text-black-300">
                                         {user?.name}
@@ -80,17 +120,26 @@ export default function HomeScreen() {
                             </View>
 
                             <View className="flex flex-row gap-5 mt-5">
-                                <FlatList
-                                    data={[1, 2, 3, 4]}
-                                    renderItem={({ item }) => {
-                                        return <FeaturedCards />;
-                                    }}
-                                    keyExtractor={(item) => item.toString()}
-                                    horizontal
-                                    // bounces
-                                    showsHorizontalScrollIndicator={false}
-                                    contentContainerClassName="flex gap-5"
-                                />
+                                {
+                                    latestPropertiesLoading ?
+                                        <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+                                    : !latestPropertiesData || latestPropertiesData?.length === 0 ? <NoResult /> : (
+                                        <FlatList
+                                            // data={[]}
+                                            // data={[1, 2, 3, 4]}
+                                            data={latestPropertiesData || []}
+                                            renderItem={({ item }) => {
+                                                return <FeaturedCards item={item} onPress={() => handlePress(item.$id)} />;
+                                            }}
+                                            keyExtractor={(item) => item.$id.toString()}
+                                            horizontal
+                                            // bounces
+                                            showsHorizontalScrollIndicator={false}
+                                            contentContainerClassName="flex gap-5"
+                                        />
+                                    )
+                                }
+                                
                             </View>
 
                             {/* Recommendation */}
